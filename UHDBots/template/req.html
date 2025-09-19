@@ -3,71 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UHD Bots | UHD File Streaming</title>
+  <title>UHD Bots | Retro Streaming</title>
 
-  <!-- Fonts & Icons -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@600&display=swap">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <style>
     :root {
-      --primary: #00e0ff;
-      --secondary: #00ffb2;
-      --accent: #ff47ff;
-      --dark: #0d0d15;
-      --card-bg: rgba(20, 20, 35, 0.85);
-      --border-glow: rgba(0, 255, 200, 0.35);
+      --neon-pink: #ff00c8;
+      --neon-blue: #00f7ff;
+      --neon-purple: #9d00ff;
+      --dark: #0a0a0f;
+      --grid: rgba(255,255,255,0.05);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0d0d15, #111122 60%, #0a0a14);
-      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(180deg, #0a0a0f 0%, #120024 100%);
       min-height: 100vh;
+      color: #fff;
+      overflow-x: hidden;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
       padding: 40px 15px;
+      position: relative;
     }
 
-    .container {
-      width: 100%;
-      max-width: 900px;
-      text-align: center;
+    /* Retro Grid Background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        to right,
+        var(--grid) 0px,
+        var(--grid) 1px,
+        transparent 1px,
+        transparent 60px
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        var(--grid) 0px,
+        var(--grid) 1px,
+        transparent 1px,
+        transparent 60px
+      );
+      z-index: 0;
     }
+
+    .container { width: 100%; max-width: 900px; text-align: center; z-index: 1; }
 
     .header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      font-family: 'Press Start 2P', cursive;
+      font-size: 2rem;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-blue);
+      margin-bottom: 15px;
     }
     .subtitle {
       font-size: 1rem;
-      color: #aaa;
+      color: #ccc;
       margin-bottom: 30px;
+      font-family: 'Orbitron', sans-serif;
     }
 
     .card {
-      background: var(--card-bg);
+      background: rgba(10, 10, 25, 0.8);
       border-radius: 18px;
       padding: 25px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(12px);
-      transition: all 0.3s ease;
+      border: 2px solid var(--neon-purple);
+      box-shadow: 0 0 15px var(--neon-purple), inset 0 0 20px rgba(255,255,255,0.05);
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
     }
-    .card:hover { transform: translateY(-4px); }
+    .card:hover { transform: translateY(-5px) scale(1.02); }
 
     .card-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.4rem;
-      color: var(--primary);
-      margin-bottom: 18px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1rem;
+      color: var(--neon-blue);
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px var(--neon-blue);
       display: flex;
       justify-content: center;
       gap: 8px;
@@ -76,21 +96,22 @@
 
     video {
       width: 100%;
-      border-radius: 12px;
-      border: 2px solid var(--border-glow);
+      border-radius: 10px;
+      border: 2px solid var(--neon-pink);
       background: #000;
-      box-shadow: 0 0 25px rgba(0, 255, 200, 0.25);
+      box-shadow: 0 0 20px var(--neon-pink);
     }
 
     .file-info {
       margin-top: 14px;
-      font-size: 0.95rem;
-      color: #ccc;
+      font-size: 0.85rem;
+      color: #bbb;
+      font-family: 'Orbitron', sans-serif;
     }
-    .file-info b { color: var(--secondary); }
+    .file-info b { color: var(--neon-blue); }
 
     .btn-group {
-      margin-top: 28px;
+      margin-top: 25px;
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
@@ -98,13 +119,10 @@
     }
 
     .btn {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border: none;
-      padding: 12px 22px;
-      border-radius: 50px;
-      font-size: 0.95rem;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: #000;
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -112,53 +130,63 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-    }
-    .btn:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 6px 18px rgba(0,255,200,0.4);
+      font-family: 'Orbitron', sans-serif;
     }
 
-    .btn-alt {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #fff;
-      backdrop-filter: blur(8px);
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+      color: #000;
+      text-shadow: none;
+      box-shadow: 0 0 12px var(--neon-pink), 0 0 18px var(--neon-blue);
     }
-    .btn-alt:hover { background: rgba(255,255,255,0.12); }
+    .btn-primary:hover { transform: scale(1.08); }
+
+    .btn-alt {
+      background: transparent;
+      border: 2px solid var(--neon-blue);
+      color: var(--neon-blue);
+      text-shadow: 0 0 8px var(--neon-blue);
+    }
+    .btn-alt:hover {
+      background: var(--neon-blue);
+      color: #000;
+      box-shadow: 0 0 12px var(--neon-blue);
+    }
 
     footer {
       margin-top: 35px;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: #aaa;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 18px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-family: 'Orbitron', sans-serif;
     }
     footer b {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--neon-pink);
+      text-shadow: 0 0 8px var(--neon-pink);
     }
 
-    /* Toast notification */
+    /* Toast */
     .toast {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--card-bg);
-      color: var(--secondary);
-      padding: 12px 22px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      border: 1px solid var(--border-glow);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      background: #111;
+      color: var(--neon-blue);
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: 1px solid var(--neon-blue);
+      font-size: 0.85rem;
+      text-shadow: 0 0 8px var(--neon-blue);
+      box-shadow: 0 0 12px rgba(0,255,255,0.3);
       opacity: 0; visibility: hidden;
       transition: opacity 0.3s, visibility 0.3s;
     }
     .toast.show { opacity: 1; visibility: visible; }
 
     @media (max-width: 600px) {
-      .header h1 { font-size: 2rem; }
+      .header h1 { font-size: 1.4rem; }
       .btn { flex: 1 1 100%; justify-content: center; }
     }
   </style>
@@ -166,22 +194,21 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1><i class="fa-solid fa-play"></i> UHD Official</h1>
-      <p class="subtitle">Ultra High Definition File Streaming</p>
+      <h1><i class="fa-solid fa-compact-disc fa-spin"></i> UHD Retro</h1>
+      <p class="subtitle">Luxury Retro Streaming Platform</p>
     </div>
 
-    <div class="card" id="fileCard">
-      <h2 class="card-title"><i class="fas fa-film"></i> {{ file_name }}</h2>
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-play-circle"></i> {{ file_name }}</h2>
       <video controls poster="{{ thumb }}" autoplay playsinline>
         <source src="{{ file_url }}" type="video/mp4">
-        Your browser does not support the video tag.
       </video>
       <div class="file-info"><p><b>Size:</b> {{ file_size }}</p></div>
     </div>
 
     <div class="btn-group">
-      <a class="btn" href="{{ file_url }}" download><i class="fas fa-bolt"></i> Fast Download</a>
-      <a class="btn" href="{{ file_url }}" target="_blank"><i class="fas fa-desktop"></i> Watch Online</a>
+      <a class="btn btn-primary" href="{{ file_url }}" download><i class="fas fa-bolt"></i> Fast Download</a>
+      <a class="btn btn-primary" href="{{ file_url }}" target="_blank"><i class="fas fa-desktop"></i> Watch Online</a>
       <a class="btn btn-alt" href="intent:{{ file_url }}#Intent;package=com.mxtech.videoplayer.ad;S.title={{ file_name }};end">
         <i class="fas fa-play"></i> MX Player
       </a>
@@ -190,7 +217,7 @@
     </div>
 
     <footer>
-      <p><i class="fas fa-shield"></i> © 2025 <b>UHD Bots</b> | Secure & Google Protected</p>
+      <p>© 2025 <b>UHD Bots</b> | Retro Neon Experience</p>
     </footer>
   </div>
 
@@ -202,7 +229,7 @@
         const toast = document.getElementById("toast");
         toast.classList.add("show");
         setTimeout(() => toast.classList.remove("show"), 3000);
-      }).catch(err => alert("❌ Failed to copy: " + err));
+      });
     }
   </script>
 </body>
