@@ -35,7 +35,7 @@ async def start_command(client, message):
     )
 
 
-# ------------------ FILE HANDLER ------------------ #
+
 @Client.on_message(filters.private & (filters.document | filters.video))
 async def stream_start(client, message):
     try:
@@ -46,7 +46,7 @@ async def stream_start(client, message):
         user_id = message.from_user.id
         username = message.from_user.mention
 
-        # Save file in log channel
+        
         log_msg = await client.send_cached_media(
             chat_id=LOG_CHANNEL,
             file_id=fileid,
@@ -54,32 +54,32 @@ async def stream_start(client, message):
 
         fileName = get_name(log_msg)
 
-        # ✅ Direct links only (no shortlink feature)
+        
         stream = f"{URL}watch/{log_msg.id}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
         download = f"{URL}{log_msg.id}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
 
-        # Log message in log channel
+        
         await log_msg.reply_text(
-            text=f"📌 Link Generated for user {username} (ID: {user_id})\n\n"
-                 f"📂 File Name: {fileName}",
+            text=f"📌 ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ғᴏʀ ᴜsᴇʀ {username} (ID: {user_id})\n\n"
+                 f"📂 ғɪʟᴇ ɴᴀᴍᴇ: {fileName}",
             quote=True,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton("🚀 Fast Download", url=download),
-                    InlineKeyboardButton("🖥 Watch Online", url=stream)
+                    InlineKeyboardButton("🚀 ғᴀsᴛ ᴅᴏᴡɴʟᴏᴀᴅ", url=download),
+                    InlineKeyboardButton("🖥 ᴡᴀᴛᴄʜ", url=stream)
                 ]]
             )
         )
 
-        # Send links to user
+        
         msg_text = (
-            "<i><u>✅ Your Link is Ready!</u></i>\n\n"
-            f"<b>📂 File Name:</b> <i>{fileName}</i>\n"
-            f"<b>📦 File Size:</b> <i>{filesize}</i>\n\n"
-            f"<b>📥 Download:</b> <i>{download}</i>\n\n"
-            f"<b>🖥 Watch:</b> <i>{stream}</i>\n\n"
-            "<b>🚸 Note:</b> Links will work until I delete the file."
+            "<i><u>✅ ʏᴏᴜʀ ʟɪɴᴋ ɪs ʀᴇᴀᴅʏ!!</u></i>\n\n"
+            f"<b>📂 ғɪʟᴇ ɴᴀᴍᴇ:</b> <i>{fileName}</i>\n"
+            f"<b>📦 ғɪʟᴇ sɪᴢᴇ:</b> <i>{filesize}</i>\n\n"
+            f"<b>📥 ᴅᴏᴡɴʟᴏᴀᴅ:</b> <i>{download}</i>\n\n"
+            f"<b>🖥 ᴡᴀᴛᴄʜ:</b> <i>{stream}</i>\n\n"
+            "<b>🚸 ɴᴏᴛᴇ:</b> ʟɪɴᴋs ᴡɪʟʟ ᴡᴏʀᴋ ᴜɴᴛɪʟ ɪ ᴅᴇʟᴇᴛᴇ ᴛʜᴇ ғɪʟᴇ."
         )
 
         await message.reply_text(
@@ -88,8 +88,8 @@ async def stream_start(client, message):
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [[
-                    InlineKeyboardButton("📥 Fast Download", url=download),
-                    InlineKeyboardButton("🖥 Watch", url=stream)
+                    InlineKeyboardButton("📥 ғᴀsᴛ ᴅᴏᴡɴʟᴏᴀᴅ", url=download),
+                    InlineKeyboardButton("🖥 ᴡᴀᴛᴄʜ", url=stream)
                 ]]
             )
         )
