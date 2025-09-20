@@ -1,3 +1,4 @@
+# 🗿  Visit & Support us - @UHD_Official
 # ⚡️ Do Not Remove Credit - Made by @UHD_Bots
 # 💬 For Any Help Join Support Group: @UHDBots_Support
 # 🚫 Removing or Modifying these Lines will Cause the bot to Stop Working.
@@ -21,7 +22,7 @@ MULTI_CLIENT = False
 SLEEP_THRESHOLD = int(environ.get("SLEEP_THRESHOLD", "60"))
 PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # 20 minutes
 ON_HEROKU = "DYNO" in environ
-URL = environ.get("URL", "https://traditional-emera-gdrives7511-6c52eaab.koyeb.app/")
+URL = environ.get("URL", "")
 
 # ──────────────────────── Admins & Channels ─────────────────────
 LOG_CHANNEL = int(environ.get("LOG_CHANNEL", "0"))
@@ -32,4 +33,4 @@ ADMINS = [
 
 # ──────────────────────── Database Settings ─────────────────────
 DATABASE_URI = environ.get("DATABASE_URI", "")
-DATABASE_NAME = environ.get("DATABASE_NAME", "HDMoviesEarth")
+DATABASE_NAME = environ.get("DATABASE_NAME", "")
