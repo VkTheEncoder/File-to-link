@@ -18,7 +18,7 @@ class ByteStreamer:
         """
         A custom class for handling Telegram file streaming with caching & session management.
         """
-        self.clean_timer = 30 * 60  # default: 30 min
+        self.clean_timer = 30 * 60  
         self.client: Client = client
         self.cached_file_ids: Dict[int, FileId] = {}
         self.cache_last_access: Dict[int, float] = {}
@@ -58,7 +58,7 @@ class ByteStreamer:
             logging.debug(f"Using cached media session for DC {file_id.dc_id}")
             return media_session
 
-        # Create new session if not exists
+        
         if file_id.dc_id != await client.storage.dc_id():
             media_session = Session(
                 client,
@@ -69,7 +69,7 @@ class ByteStreamer:
             )
             await media_session.start()
 
-            # Export auth and import in new DC
+            
             for attempt in range(6):
                 exported_auth = await client.invoke(
                     raw.functions.auth.ExportAuthorization(dc_id=file_id.dc_id)
@@ -175,7 +175,7 @@ class ByteStreamer:
                     logging.debug("No more chunks received, stopping.")
                     break
 
-                # Slice first and last parts if needed
+                
                 if part_count == 1:
                     yield chunk[first_part_cut:last_part_cut]
                 elif current_part == 1:
@@ -185,11 +185,11 @@ class ByteStreamer:
                 else:
                     yield chunk
 
-                # Prepare next iteration
+                
                 offset += chunk_size
                 current_part += 1
 
-                del chunk  # free memory for large files
+                del chunk  
 
         except (TimeoutError, AttributeError) as e:
             logging.error(f"Stream error at offset {offset}: {e}")
@@ -210,4 +210,5 @@ class ByteStreamer:
                 self.cached_file_ids.pop(msg_id, None)
                 self.cache_last_access.pop(msg_id, None)
                 logging.debug(f"Cache cleared for message ID {msg_id}")
+
 
