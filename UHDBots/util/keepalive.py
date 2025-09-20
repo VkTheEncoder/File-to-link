@@ -30,7 +30,7 @@ async def ping_server():
                         f"Pinged {URL} | Status: {resp.status} | Latency: {latency:.2f} ms"
                     )
 
-                    # If server returns error, retry sooner
+                   
                     if resp.status >= 500:
                         logging.warning("Server error detected, retrying in 30s...")
                         sleep_time = 30
@@ -43,10 +43,11 @@ async def ping_server():
 
         except aiohttp.ClientError as e:
             logging.error(f"Client error while pinging {URL}: {e}")
-            sleep_time = 60  # retry slower if connection fails
+            sleep_time = 60  
 
         except Exception:
             logging.error("Unexpected error in keepalive ping:")
             traceback.print_exc()
             sleep_time = 60
+
 
