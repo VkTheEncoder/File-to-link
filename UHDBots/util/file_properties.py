@@ -56,7 +56,7 @@ async def get_file_ids(client: Client, chat_id: int, id: int) -> FileId:
     if not file_id:
         raise FileNotFound(f"Unable to decode file_id for message id={id}")
 
-    # Attach extra metadata safely
+    
     setattr(file_id, "file_size", getattr(media, "file_size", 0))
     setattr(file_id, "mime_type", getattr(media, "mime_type", "unknown"))
     setattr(file_id, "file_name", getattr(media, "file_name", f"file_{id}"))
@@ -94,4 +94,5 @@ def is_streamable(media_msg: Message) -> bool:
     media = get_media_from_message(media_msg)
     mime = getattr(media, "mime_type", "") or ""
     return mime.startswith("video") or mime.startswith("audio")
+
 
