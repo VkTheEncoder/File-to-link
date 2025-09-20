@@ -16,7 +16,7 @@ class TokenParser:
         logging.info("Parsing tokens from environment variables...")
         self.tokens = {}
 
-        # Filter only MULTI_TOKEN*
+        
         env_tokens = [
             (key, value)
             for key, value in sorted(os.environ.items())
@@ -68,4 +68,5 @@ class TokenParser:
             logging.error(f"Error parsing config file: {e}")
 
         return self.tokens
+
 
