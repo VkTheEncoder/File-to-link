@@ -1,3 +1,4 @@
+# 🗿  Visit & Support us - @UHD_Official
 # ⚡️ Do Not Remove Credit - Made by @UHD_Bots
 # 💬 For Any Help Join Support Group: @UHDBots_Support
 # 🚫 Removing or Modifying these Lines will Cause the bot to Stop Working.
@@ -15,11 +16,11 @@ async def initialize_clients():
     """
     Initialize all bot clients (main + multi-token clients).
     """
-    # Default client setup
+    
     multi_clients[0] = UHDBots
     work_loads[0] = 0
 
-    # Load tokens from environment
+    
     all_tokens = TokenParser().parse_from_env()
     if not all_tokens:
         print("⚠️ No additional clients found, using default client only.")
@@ -45,7 +46,7 @@ async def initialize_clients():
                 in_memory=True
             ).start()
 
-            # Initialize workload counter for this client
+            
             work_loads[client_id] = 0
 
             print(f"✅ Client {client_id} started successfully")
@@ -55,22 +56,23 @@ async def initialize_clients():
             logging.error(f"❌ Failed to start Client {client_id}: {e}", exc_info=True)
             return None
 
-    # Launch all clients in parallel
+    
     results = await asyncio.gather(
         *[start_client(i, token) for i, token in all_tokens.items()],
         return_exceptions=False
     )
 
-    # Filter out failed clients
+   
     started_clients = {cid: client for cid, client in results if cid is not None}
 
-    # Update global client dictionary
+   
     multi_clients.update(started_clients)
 
-    # Log status
+    
     if len(multi_clients) > 1:
         print(f"✅ Multi-Client Mode Enabled ({len(multi_clients)} clients active)")
     else:
         print("⚠️ No additional clients were initialized, using default client only.")
+
 
 
