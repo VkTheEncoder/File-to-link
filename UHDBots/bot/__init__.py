@@ -14,12 +14,12 @@ from config import *
 from utils import temp
 
 
-# ✅ Logging setup
+
 logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.INFO)
 
-# Suppress noisy loggers
+
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("imdbpy").setLevel(logging.ERROR)
 logging.getLogger("aiohttp").setLevel(logging.ERROR)
@@ -38,7 +38,7 @@ class UHDXBots(Client):
             workers=50,
             plugins={"root": "plugins"},
             sleep_threshold=5,
-            in_memory=True  # ✅ Avoids session file overhead
+            in_memory=True  
         )
 
     async def set_self(self):
@@ -75,12 +75,13 @@ class UHDXBots(Client):
                 current += 1
 
 
-# ✅ Default Client instance
+
 UHDBots = UHDXBots()
 
-# ✅ Multi-client support storage
+
 multi_clients: dict[int, Client] = {}
 work_loads: dict[int, int] = {}
+
 
 
 
