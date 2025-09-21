@@ -53,7 +53,7 @@ def load_plugins():
 
 def add_command_handlers():
     # ===== PING =====
-    @UHDBots.on_message(filters.command("ping") & filters.user(ADMIN))
+    @UHDBots.on_message(filters.command("ping") & filters.user(ADMINS))
     async def ping_handler(client, message):
         start_t = time.time()
         m = await message.reply_text("🏓 Pinging...")
@@ -61,7 +61,7 @@ def add_command_handlers():
         await m.edit_text(f"✅ Pong! `{round((end_t - start_t) * 1000)} ms`")
 
     # ===== UPTIME =====
-    @UHDBots.on_message(filters.command("uptime") & filters.user(ADMIN))
+    @UHDBots.on_message(filters.command("uptime") & filters.user(ADMINS))
     async def uptime_handler(client, message):
         uptime = time.time() - START_TIME
         days, rem = divmod(int(uptime), 86400)
@@ -70,7 +70,7 @@ def add_command_handlers():
         await message.reply_text(f"⏱ Uptime: `{days}d {hours}h {minutes}m {seconds}s`")
 
     # ===== BAN =====
-    @UHDBots.on_message(filters.command("ban") & filters.user(ADMIN))
+    @UHDBots.on_message(filters.command("ban") & filters.user(ADMINS))
     async def ban_handler(client, message):
         if not message.reply_to_message:
             return await message.reply_text("⚠️ Reply to a user to ban them.")
@@ -79,7 +79,7 @@ def add_command_handlers():
         await message.reply_text(f"🚫 User `{user_id}` has been banned.")
 
     # ===== UNBAN =====
-    @UHDBots.on_message(filters.command("unban") & filters.user(ADMIN))
+    @UHDBots.on_message(filters.command("unban") & filters.user(ADMINS))
     async def unban_handler(client, message):
         if not message.reply_to_message:
             return await message.reply_text("⚠️ Reply to a user to unban them.")
@@ -133,3 +133,4 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(start())
     except KeyboardInterrupt:
         logging.info("🛑 Service Stopped. Bye 👋")
+
