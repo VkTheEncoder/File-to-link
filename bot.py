@@ -6,6 +6,7 @@ import logging.config
 import pytz
 import asyncio
 import time
+import random
 from pathlib import Path
 from datetime import date, datetime
 
@@ -25,13 +26,11 @@ from UHDBots.bot.clients import initialize_clients
 # ---------------- Logging ----------------
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
-
 for noisy_logger in ["pyrogram", "imdbpy", "aiohttp", "aiohttp.web"]:
     logging.getLogger(noisy_logger).setLevel(logging.ERROR)
 
 # ---------------- Globals ----------------
 START_TIME = time.time()
-BANNED_USERS = set()
 EMOJI_LIST = ["😎", "🔥", "❤️", "🤖"]  # Auto emoji react
 
 # ---------------- Plugin Loader ----------------
@@ -47,15 +46,24 @@ def load_plugins():
         spec = importlib.util.spec_from_file_location(import_path, plugin_path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-
         sys.modules[import_path] = module
         logging.info(f"✅ UHD Bots Imported => {plugin_name}")
 
 # ---------------- Command Handlers ----------------
 def add_command_handlers():
+
+    # ===== REACTION HELPER =====
+    async def react_command(message):
+        try:
+            emoji = random.choice(EMOJI_LIST)
+            await message.react(emoji)
+        except:
+            pass
+
     # ===== PING =====
     @UHDBots.on_message(filters.command("ping") & filters.user(ADMINS))
     async def ping_handler(client, message):
+        await react_command(message)
         start_t = time.time()
         m = await message.reply_text("🏓 Pinging...")
         end_t = time.time()
@@ -64,6 +72,7 @@ def add_command_handlers():
     # ===== UPTIME =====
     @UHDBots.on_message(filters.command("uptime") & filters.user(ADMINS))
     async def uptime_handler(client, message):
+        await react_command(message)
         uptime = time.time() - START_TIME
         days, rem = divmod(int(uptime), 86400)
         hours, rem = divmod(rem, 3600)
@@ -73,6 +82,7 @@ def add_command_handlers():
     # ===== BAN =====
     @UHDBots.on_message(filters.command("ban") & filters.user(ADMINS))
     async def ban_handler(client, message):
+        await react_command(message)
         if not message.reply_to_message:
             return await message.reply_text("⚠️ Reply to a user to ban them.")
         user_id = message.reply_to_message.from_user.id
@@ -86,6 +96,7 @@ def add_command_handlers():
     # ===== UNBAN =====
     @UHDBots.on_message(filters.command("unban") & filters.user(ADMINS))
     async def unban_handler(client, message):
+        await react_command(message)
         if not message.reply_to_message:
             return await message.reply_text("⚠️ Reply to a user to unban them.")
         user_id = message.reply_to_message.from_user.id
@@ -95,48 +106,33 @@ def add_command_handlers():
         else:
             await message.reply_text("⚠️ This user is not banned.")
 
-                      # ===== STATS =====
-@UHDBots.on_message(filters.command("stats"))
-async def stats_handler(client, message):
-    try:
-        total_users = await db.users.count_documents({})
-    except Exception:
-        total_users = 0
-
-    try:
-        total_chats = await db.chats.count_documents({})
-    except Exception:
-        total_chats = 0
-
-    await message.reply_text(
-        f"📊 Bot Statistics:\n\n"
-        f"👤 Total Users: {total_users}\n"
-        f"💬 Total Chats: {total_chats}"
-    )
-    
-    # ===== AUTO EMOJI REACT =====
-    @UHDBots.on_message(filters.group | filters.channel)
-    async def auto_emoji_react(client, message):
-        import random
-        emoji = random.choice(EMOJI_LIST)
+    # ===== STATS =====
+    @UHDBots.on_message(filters.command("stats"))
+    async def stats_handler(client, message):
+        await react_command(message)
         try:
-            await message.reply_text(emoji, quote=True)
-        except:
-            pass
+            total_users = await db.users.count_documents({})
+        except Exception:
+            total_users = 0
+        try:
+            total_chats = await db.chats.count_documents({})
+        except Exception:
+            total_chats = 0
+        await message.reply_text(
+            f"📊 Bot Statistics:\n\n"
+            f"👤 Total Users: {total_users}\n"
+            f"💬 Total Chats: {total_chats}"
+        )
 
 # ---------------- Bot Startup ----------------
 async def start():
     print("\n🚀 Initializing UHD Bots...\n")
-
     await UHDBots.start()
     bot_info = await UHDBots.get_me()
-
     await initialize_clients()
     load_plugins()
-
     if ON_HEROKU:
         asyncio.create_task(ping_server())
-
     temp.BOT = UHDBots
     temp.ME = bot_info.id
     temp.U_NAME = bot_info.username
@@ -146,7 +142,6 @@ async def start():
     today = date.today()
     now = datetime.now(tz)
     time_now = now.strftime("%H:%M:%S %p")
-
     await UHDBots.send_message(
         chat_id=LOG_CHANNEL,
         text=script.RESTART_TXT.format(today, time_now)
@@ -158,7 +153,6 @@ async def start():
 
     # ✅ Add command handlers
     add_command_handlers()
-
     await idle()
 
 # ---------------- Run Bot ----------------
@@ -167,4 +161,3 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(start())
     except KeyboardInterrupt:
         logging.info("🛑 Service Stopped. Bye 👋")
-
