@@ -90,6 +90,28 @@ def add_command_handlers():
         else:
             await message.reply_text("⚠️ This user is not banned.")
 
+     EMOJI_LIST = ["😎", "🔥", "❤️", "🤖"]
+
+     @UHDBots.on_message(filters.group | filters.channel)
+     async def auto_emoji_react(client, message):
+         import random
+            emoji = random.choice(EMOJI_LIST)
+        try:
+           await message.reply_text(emoji, quote=True)  # or use message.react(emoji) if supported
+        except:
+              pass
+
+     @UHDBots.on_message(filters.command("stats"))
+     async def stats_handler(client, message):
+    
+     total_users = await db.users.count_documents({})
+     total_chats = await db.chats.count_documents({})
+    
+        await message.reply_text(
+            f"📊 Bot Statistics:\n\n"
+            f"👤 Total Users: {total_users}\n"
+            f"💬 Total Chats: {total_chats}"
+       )
 
 async def start():
     print("\n🚀 Initializing UHD Bots...\n")
@@ -133,4 +155,5 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(start())
     except KeyboardInterrupt:
         logging.info("🛑 Service Stopped. Bye 👋")
+
 
