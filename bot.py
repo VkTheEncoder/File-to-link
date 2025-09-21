@@ -7,7 +7,6 @@ import pytz
 import asyncio
 import time
 from pathlib import Path
-from typing import Union, Optional, AsyncGenerator
 from datetime import date, datetime
 
 from pyrogram import Client, filters, idle
@@ -23,17 +22,19 @@ from UHDBots.bot import UHDBots
 from UHDBots.util.keepalive import ping_server
 from UHDBots.bot.clients import initialize_clients
 
+# ---------------- Logging ----------------
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 
 for noisy_logger in ["pyrogram", "imdbpy", "aiohttp", "aiohttp.web"]:
     logging.getLogger(noisy_logger).setLevel(logging.ERROR)
 
-# ===== Global Variables =====
+# ---------------- Globals ----------------
 START_TIME = time.time()
 BANNED_USERS = set()
+EMOJI_LIST = ["😎", "🔥", "❤️", "🤖"]  # Auto emoji react
 
-
+# ---------------- Plugin Loader ----------------
 def load_plugins():
     """Dynamically import all plugins from plugins/ folder."""
     ppath = "plugins/*.py"
@@ -50,7 +51,7 @@ def load_plugins():
         sys.modules[import_path] = module
         logging.info(f"✅ UHD Bots Imported => {plugin_name}")
 
-
+# ---------------- Command Handlers ----------------
 def add_command_handlers():
     # ===== PING =====
     @UHDBots.on_message(filters.command("ping") & filters.user(ADMINS))
@@ -75,7 +76,11 @@ def add_command_handlers():
         if not message.reply_to_message:
             return await message.reply_text("⚠️ Reply to a user to ban them.")
         user_id = message.reply_to_message.from_user.id
-        BANNED_USERS.add(user_id)
+        await db.banned_users.update_one(
+            {"user_id": user_id},
+            {"$set": {"user_id": user_id, "banned_at": datetime.utcnow()}},
+            upsert=True
+        )
         await message.reply_text(f"🚫 User `{user_id}` has been banned.")
 
     # ===== UNBAN =====
@@ -84,35 +89,32 @@ def add_command_handlers():
         if not message.reply_to_message:
             return await message.reply_text("⚠️ Reply to a user to unban them.")
         user_id = message.reply_to_message.from_user.id
-        if user_id in BANNED_USERS:
-            BANNED_USERS.remove(user_id)
+        result = await db.banned_users.delete_one({"user_id": user_id})
+        if result.deleted_count:
             await message.reply_text(f"✅ User `{user_id}` has been unbanned.")
         else:
             await message.reply_text("⚠️ This user is not banned.")
 
-     EMOJI_LIST = ["😎", "🔥", "❤️", "🤖"]
-
-     @UHDBots.on_message(filters.group | filters.channel)
-     async def auto_emoji_react(client, message):
-         import random
-            emoji = random.choice(EMOJI_LIST)
-        try:
-           await message.reply_text(emoji, quote=True)  # or use message.react(emoji) if supported
-        except:
-              pass
-
-     @UHDBots.on_message(filters.command("stats"))
-     async def stats_handler(client, message):
-    
-     total_users = await db.users.count_documents({})
-     total_chats = await db.chats.count_documents({})
-    
+    # ===== STATS =====
+    @UHDBots.on_message(filters.command("stats"))
+    async def stats_handler(client, message):
+        total_users = await db.users.count_documents({})
+        total_chats = await db.chats.count_documents({})
         await message.reply_text(
-            f"📊 Bot Statistics:\n\n"
-            f"👤 Total Users: {total_users}\n"
-            f"💬 Total Chats: {total_chats}"
-       )
+            f"📊 Bot Statistics:\n\n👤 Total Users: {total_users}\n💬 Total Chats: {total_chats}"
+        )
 
+    # ===== AUTO EMOJI REACT =====
+    @UHDBots.on_message(filters.group | filters.channel)
+    async def auto_emoji_react(client, message):
+        import random
+        emoji = random.choice(EMOJI_LIST)
+        try:
+            await message.reply_text(emoji, quote=True)
+        except:
+            pass
+
+# ---------------- Bot Startup ----------------
 async def start():
     print("\n🚀 Initializing UHD Bots...\n")
 
@@ -149,11 +151,9 @@ async def start():
 
     await idle()
 
-
+# ---------------- Run Bot ----------------
 if __name__ == "__main__":
     try:
         asyncio.get_event_loop().run_until_complete(start())
     except KeyboardInterrupt:
         logging.info("🛑 Service Stopped. Bye 👋")
-
-
