@@ -95,15 +95,25 @@ def add_command_handlers():
         else:
             await message.reply_text("⚠️ This user is not banned.")
 
-    # ===== STATS =====
-    @UHDBots.on_message(filters.command("stats"))
-    async def stats_handler(client, message):
+                      # ===== STATS =====
+@UHDBots.on_message(filters.command("stats"))
+async def stats_handler(client, message):
+    try:
         total_users = await db.users.count_documents({})
-        total_chats = await db.chats.count_documents({})
-        await message.reply_text(
-            f"📊 Bot Statistics:\n\n👤 Total Users: {total_users}\n💬 Total Chats: {total_chats}"
-        )
+    except Exception:
+        total_users = 0
 
+    try:
+        total_chats = await db.chats.count_documents({})
+    except Exception:
+        total_chats = 0
+
+    await message.reply_text(
+        f"📊 Bot Statistics:\n\n"
+        f"👤 Total Users: {total_users}\n"
+        f"💬 Total Chats: {total_chats}"
+    )
+    
     # ===== AUTO EMOJI REACT =====
     @UHDBots.on_message(filters.group | filters.channel)
     async def auto_emoji_react(client, message):
@@ -157,3 +167,4 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(start())
     except KeyboardInterrupt:
         logging.info("🛑 Service Stopped. Bye 👋")
+
