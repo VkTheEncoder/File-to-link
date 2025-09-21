@@ -58,14 +58,15 @@
 <details>
 <summary><b>Deploy to VPS</b></summary>
 
-```bash
+```
 # Clone The Repository
-git clone https://github.com/UHD-Botz/UHD-Auto-React-Bot.git
+git clone https://github.com/UHD-Botz/UHD-FiletoLinks-Bot.git
+cd UHD-FiletoLinks-Bot
 
 # Install Required Packages
 pip3 install -r requirements.txt
 
-# Edit config.py (add your API_ID, API_HASH, BOT_TOKEN, etc.)
+# Edit config.py (add your API_ID, API_HASH, BOT_TOKEN, DB_URI, etc.)
 
 # Run The Bot
 python3 bot.py
