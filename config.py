@@ -10,7 +10,7 @@ from os import environ
 
 id_pattern = re.compile(r'^-?\d+$')
 
-# ──────────────────────── Bot Information ───────────────────────
+
 SESSION = environ.get("SESSION", "UHDFiletoLinksBot")
 API_ID = int(environ.get("API_ID", "0"))
 API_HASH = environ.get("API_HASH", "")
