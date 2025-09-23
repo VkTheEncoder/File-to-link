@@ -16,6 +16,7 @@
 | 🛠 Restart             | Instantly restart the bot from Telegram with `/restart`                       |
 | 🔎 Ping Command        | Test bot latency with `/ping`                                                 |
 | 🔐 Force Subscribe     | Optional mandatory channel subscription (`IS_FSUB`)                           |
+| ⏳ Uptime Command      | Check Bot Uptime (`/uptime`)                           |
 
 ---
 
